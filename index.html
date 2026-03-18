@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>ICT Guru</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f2f2f7;--surface:rgba(255,255,255,.8);--solid:#fff;--surface2:rgba(118,118,128,.12);--surface3:rgba(118,118,128,.07);
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.12);--sep:rgba(60,60,67,.12);
+  --text:#1c1c1e;--text2:#3c3c43;--text3:#8e8e93;--text4:#aeaeb2;
+  --blue:#007aff;--blue-bg:rgba(0,122,255,.1);--green:#34c759;--green-bg:rgba(52,199,89,.1);
+  --red:#ff3b30;
+  --shadow:0 2px 20px rgba(0,0,0,.07),0 1px 3px rgba(0,0,0,.05);
+  --shadow-lg:0 12px 48px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.05);
+  --r:20px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#000;--surface:rgba(26,26,28,.92);--solid:#1c1c1e;--surface2:rgba(118,118,128,.22);--surface3:rgba(118,118,128,.14);
+  --border:rgba(255,255,255,.09);--border2:rgba(255,255,255,.13);--sep:rgba(84,84,88,.5);
+  --text:#fff;--text2:rgba(235,235,245,.8);--text3:#8e8e93;--text4:#48484a;
+  --blue:#0a84ff;--blue-bg:rgba(10,132,255,.15);--green:#32d74b;--green-bg:rgba(50,215,75,.12);
+  --red:#ff453a;
+  --shadow:0 2px 20px rgba(0,0,0,.4),0 1px 3px rgba(0,0,0,.3);
+  --shadow-lg:0 12px 48px rgba(0,0,0,.55),0 2px 8px rgba(0,0,0,.3);
+}}
+html,body{height:100%;font-family:'Inter',-apple-system,'SF Pro Text',BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+body{display:flex;align-items:center;justify-content:center;min-height:100vh}
+
+/* animations */
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes winIn{from{opacity:0;transform:scale(.96) translateY(20px)}to{opacity:1;transform:none}}
+@keyframes bIn{from{opacity:0;transform:scale(.9) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes sheetUp{from{opacity:0;transform:translateY(100%)}to{opacity:1;transform:none}}
+
+/* ── PRELOADER ── */
+#pre{position:fixed;inset:0;z-index:900;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.pre-icon{width:80px;height:80px;border-radius:22px;background:var(--blue);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 30px rgba(0,122,255,.35);animation:pop .65s cubic-bezier(.34,1.56,.64,1)}
+.pre-icon svg{width:40px;height:40px;fill:#fff}
+.pre-name{font-size:1.4rem;font-weight:600;letter-spacing:-.025em;animation:up .5s .15s both}
+.pre-desc{font-size:.8rem;color:var(--text3);animation:up .5s .25s both}
+.spinner{width:22px;height:22px;border:2.5px solid var(--surface2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite,up .4s .4s both}
+
+/* ── LOGIN SCREEN ── */
+#login{display:none;position:fixed;inset:0;z-index:800;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:0}
+.login-card{width:100%;max-width:360px;background:var(--surface);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow-lg);padding:2.5rem 2rem;text-align:center;animation:winIn .6s cubic-bezier(.16,1,.3,1) both}
+.login-icon{width:72px;height:72px;border-radius:20px;background:var(--blue);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 4px 20px rgba(0,122,255,.3)}
+.login-icon svg{width:34px;height:34px;fill:#fff}
+.login-title{font-size:1.3rem;font-weight:600;letter-spacing:-.02em;margin-bottom:6px}
+.login-sub{font-size:.8rem;color:var(--text3);line-height:1.65;margin-bottom:2rem}
+.google-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:12px 20px;border-radius:13px;
+  background:var(--solid);border:1.5px solid var(--border2);
+  font-family:inherit;font-size:.9rem;font-weight:500;color:var(--text);
+  cursor:pointer;transition:all .15s;box-shadow:var(--shadow);
+}
+.google-btn:hover{background:var(--surface2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.google-btn:active{transform:scale(.97)}
+.google-btn svg{width:20px;height:20px;flex-shrink:0}
+.login-note{font-size:.68rem;color:var(--text4);margin-top:1.25rem;line-height:1.6}
+
+/* ── APP ── */
+#app{display:none;width:100%;max-width:900px;height:100vh;flex-direction:row;gap:0}
+@media(min-width:700px){body{padding:20px}#app{height:min(870px,calc(100vh - 40px));max-height:870px}}
+
+/* sidebar */
+.sidebar{
+  width:260px;flex-shrink:0;
+  display:flex;flex-direction:column;
+  background:var(--surface);
+  backdrop-filter:blur(48px) saturate(200%);
+  -webkit-backdrop-filter:blur(48px) saturate(200%);
+  border:1px solid var(--border);
+  border-right:none;
+  border-radius:var(--r) 0 0 var(--r);
+  overflow:hidden;
+  animation:winIn .65s cubic-bezier(.16,1,.3,1) both;
+}
+@media(max-width:699px){.sidebar{display:none}}
+
+.sb-head{padding:14px 14px 10px;border-bottom:1px solid var(--sep);flex-shrink:0}
+.sb-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sb-title{font-size:.8rem;font-weight:600;color:var(--text3);letter-spacing:.01em;text-transform:uppercase}
+.sb-new{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:background .12s}
+.sb-new:hover{background:var(--blue-bg);color:var(--blue)}
+.sb-new svg{width:13px;height:13px}
+
+/* user info */
+.user-pill{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border-radius:10px;cursor:pointer;transition:background .12s}
+.user-pill:hover{background:var(--surface3)}
+.user-av{width:28px;height:28px;border-radius:50%;background:var(--blue);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;overflow:hidden}
+.user-av img{width:100%;height:100%;object-fit:cover}
+.user-name{font-size:.75rem;font-weight:500;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sign-out-btn{font-size:.65rem;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit;padding:2px 4px;border-radius:4px}
+.sign-out-btn:hover{background:rgba(255,59,48,.1)}
+
+/* history list */
+.hist-list{flex:1;overflow-y:auto;padding:8px 8px;display:flex;flex-direction:column;gap:3px}
+.hist-list::-webkit-scrollbar{width:0}
+.hist-empty{font-size:.75rem;color:var(--text4);text-align:center;padding:2rem 1rem;line-height:1.6}
+.hist-item{
+  padding:9px 10px;border-radius:10px;cursor:pointer;
+  transition:background .12s;border:1px solid transparent;
+  display:flex;flex-direction:column;gap:3px;
+  animation:slideIn .25s both;
+}
+.hist-item:hover{background:var(--surface2)}
+.hist-item.active{background:var(--blue-bg);border-color:rgba(0,122,255,.2)}
+.hist-item-title{font-size:.75rem;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist-item-time{font-size:.62rem;color:var(--text3)}
+.hist-item-del{display:none;font-size:.6rem;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit;margin-left:auto;padding:1px 5px;border-radius:4px;flex-shrink:0}
+.hist-item:hover .hist-item-del{display:block}
+.hist-item-del:hover{background:rgba(255,59,48,.1)}
+.hist-item-row{display:flex;align-items:center;gap:4px}
+
+/* window (chat panel) */
+.win{
+  flex:1;display:flex;flex-direction:column;
+  background:var(--surface);
+  backdrop-filter:blur(48px) saturate(200%);
+  -webkit-backdrop-filter:blur(48px) saturate(200%);
+  border:1px solid var(--border);
+  border-radius:0 var(--r) var(--r) 0;
+  box-shadow:var(--shadow-lg);
+  overflow:hidden;
+  animation:winIn .65s .05s cubic-bezier(.16,1,.3,1) both;
+}
+@media(max-width:699px){.win{border-radius:var(--r);border-left:1px solid var(--border)}}
+
+.tbar{padding:14px 16px 0;display:flex;align-items:center;flex-shrink:0;user-select:none}
+.dots{display:flex;gap:7px}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.tbar-label{flex:1;text-align:center;font-size:.75rem;font-weight:500;color:var(--text3);letter-spacing:-.01em}
+
+/* mobile hist btn */
+.mob-hist-btn{display:none;width:30px;height:30px;background:var(--surface2);border:none;border-radius:50%;cursor:pointer;align-items:center;justify-content:center;color:var(--text2)}
+@media(max-width:699px){.mob-hist-btn{display:flex}}
+
+.hdr{padding:14px 18px 12px;border-bottom:1px solid var(--sep);flex-shrink:0;display:flex;align-items:center;gap:12px}
+.app-icon{width:44px;height:44px;border-radius:12px;background:var(--blue);flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 14px rgba(0,122,255,.28)}
+.app-icon svg{width:21px;height:21px;fill:#fff}
+.app-name{font-size:1rem;font-weight:600;letter-spacing:-.02em}
+.app-sub{font-size:.68rem;color:var(--text3);margin-top:1px}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.pill{font-size:.6rem;font-weight:600;padding:3px 8px;border-radius:20px}
+.pill.free{background:var(--green-bg);color:var(--green)}
+.pill.sl{background:var(--surface2);color:var(--text2)}
+.icon-btn{width:30px;height:30px;border-radius:50%;background:var(--surface2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:background .12s}
+.icon-btn:hover{background:var(--blue-bg);color:var(--blue)}
+.icon-btn svg{width:13px;height:13px}
+
+.topics-wrap{border-bottom:1px solid var(--sep);flex-shrink:0;padding:7px 0}
+.topics{display:flex;gap:5px;padding:0 14px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.topics::-webkit-scrollbar{display:none}
+.topic{flex-shrink:0;font-size:.68rem;font-weight:500;padding:5px 12px;border-radius:20px;background:var(--surface2);color:var(--text2);border:none;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
+.topic:hover{background:var(--blue-bg);color:var(--blue)}
+.topic:active{transform:scale(.94)}
+
+.chat{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:2px;scroll-behavior:smooth}
+.chat::-webkit-scrollbar{width:0}
+.dsep{text-align:center;font-size:.6rem;color:var(--text3);font-weight:500;padding:6px 0 2px}
+.mrow{display:flex;flex-direction:column;margin-bottom:1px}
+.mrow.u{align-items:flex-end}.mrow.a{align-items:flex-start}
+.ai-wrap{display:flex;align-items:flex-end;gap:7px}
+.av{width:26px;height:26px;border-radius:50%;background:var(--blue);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.52rem;font-weight:700;color:#fff;margin-bottom:2px;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+.bbl{max-width:78%;padding:9px 13px;border-radius:18px;font-size:.845rem;line-height:1.68;word-break:break-word;animation:bIn .3s cubic-bezier(.34,1.1,.64,1) both}
+.mrow.u .bbl{background:var(--blue);color:#fff;border-bottom-right-radius:4px;box-shadow:0 2px 12px rgba(0,122,255,.2)}
+.mrow.a .bbl{background:var(--solid);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:4px;box-shadow:var(--shadow)}
+@media(prefers-color-scheme:dark){.mrow.a .bbl{background:#2c2c2e;border-color:rgba(255,255,255,.07)}}
+.bbl code{font-family:'SF Mono','JetBrains Mono',monospace;font-size:.78em;background:rgba(0,0,0,.07);padding:1px 5px;border-radius:5px}
+@media(prefers-color-scheme:dark){.bbl code{background:rgba(255,255,255,.12)}}
+.mtime{font-size:.58rem;color:var(--text3);margin-top:3px;padding:0 4px}
+
+.typing-wrap{display:flex;align-items:flex-end;gap:7px}
+.t-bbl{display:flex;gap:4px;align-items:center;padding:11px 14px;background:var(--solid);border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px;box-shadow:var(--shadow);animation:bIn .25s both}
+@media(prefers-color-scheme:dark){.t-bbl{background:#2c2c2e}}
+.td{width:5px;height:5px;border-radius:50%;background:var(--text3);animation:tdot 1.3s infinite}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-5px);opacity:1}}
+
+.welcome{align-self:center;text-align:center;padding:24px 16px;animation:up .5s .1s both}
+.w-icon{width:58px;height:58px;border-radius:16px;background:var(--blue);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 4px 20px rgba(0,122,255,.28)}
+.w-icon svg{width:27px;height:27px;fill:#fff}
+.welcome h2{font-size:1rem;font-weight:600;letter-spacing:-.02em;margin-bottom:5px}
+.welcome p{font-size:.78rem;color:var(--text3);line-height:1.72;max-width:280px;margin:0 auto}
+
+.inp-wrap{padding:9px 14px 12px;border-top:1px solid var(--sep);flex-shrink:0;padding-bottom:max(12px,env(safe-area-inset-bottom))}
+.inp-bar{display:flex;align-items:flex-end;gap:8px;background:var(--solid);border:1.5px solid var(--border2);border-radius:26px;padding:6px 6px 6px 14px;transition:border-color .2s,box-shadow .2s}
+@media(prefers-color-scheme:dark){.inp-bar{background:#2c2c2e}}
+.inp-bar:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,122,255,.12)}
+textarea#inp{flex:1;resize:none;min-height:22px;max-height:96px;background:transparent;border:none;outline:none;font-family:inherit;font-size:.855rem;color:var(--text);line-height:1.5;caret-color:var(--blue);padding:0}
+textarea#inp::placeholder{color:var(--text4)}
+.send-btn{width:30px;height:30px;border-radius:50%;background:var(--blue);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;box-shadow:0 2px 8px rgba(0,122,255,.28);transition:transform .12s,opacity .2s}
+.send-btn:hover{transform:scale(1.08)}
+.send-btn:active{transform:scale(.92)}
+.send-btn:disabled{opacity:.28;cursor:not-allowed;transform:none;box-shadow:none}
+.send-btn svg{width:13px;height:13px;margin-left:1px}
+.inp-hint{font-size:.6rem;color:var(--text4);text-align:center;margin-top:5px}
+
+/* mobile history sheet */
+#hist-sheet{display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.4);backdrop-filter:blur(4px)}
+#hist-sheet.open{display:flex;align-items:flex-end}
+.sheet-inner{width:100%;background:var(--surface);backdrop-filter:blur(48px) saturate(180%);border-radius:20px 20px 0 0;padding:12px 16px 32px;animation:sheetUp .35s cubic-bezier(.16,1,.3,1)}
+.sheet-handle{width:36px;height:4px;background:var(--surface2);border-radius:2px;margin:0 auto 16px}
+.sheet-title{font-size:.8rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.01em;margin-bottom:10px}
+.sheet-list{display:flex;flex-direction:column;gap:4px;max-height:55vh;overflow-y:auto}
+</style>
+</head>
+<body>
+
+<!-- Preloader -->
+<div id="pre">
+  <div class="pre-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg></div>
+  <div class="pre-name">ICT Guru</div>
+  <div class="pre-desc">Sri Lanka · A/L ICT Assistant</div>
+  <div class="spinner"></div>
+</div>
+
+<!-- Login -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg></div>
+    <div class="login-title">ICT Guru</div>
+    <div class="login-sub">Your free A/L ICT study assistant for Sri Lanka. Sign in to save your chat history across devices.</div>
+    <button class="google-btn" onclick="signInGoogle()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Sign in with Google
+    </button>
+    <div class="login-note">Your chat history is saved securely to your Google account.<br/>This is a free service for Sri Lankan A/L ICT students.</div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sb-head">
+      <div class="sb-top">
+        <div class="sb-title">History</div>
+        <button class="sb-new" onclick="newChat()" title="New chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+      <div class="user-pill" id="userPill">
+        <div class="user-av" id="sbAv">?</div>
+        <div class="user-name" id="sbName">Student</div>
+        <button class="sign-out-btn" onclick="signOut()">Sign out</button>
+      </div>
+    </div>
+    <div class="hist-list" id="histList">
+      <div class="hist-empty">Your last 15 conversations will appear here.</div>
+    </div>
+  </div>
+
+  <!-- Chat window -->
+  <div class="win">
+    <div class="tbar">
+      <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+      <div class="tbar-label">ICT Guru</div>
+      <button class="mob-hist-btn" onclick="openSheet()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="hdr">
+      <div class="app-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg></div>
+      <div><div class="app-name">ICT Guru</div><div class="app-sub">Powered by AI · Sri Lanka A/L ICT</div></div>
+      <div class="hdr-right">
+        <span class="pill free">Free</span>
+        <span class="pill sl">🇱🇰</span>
+        <button class="icon-btn" onclick="newChat()" title="New chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="topics-wrap">
+      <div class="topics">
+        <button class="topic" onclick="ask('Explain the 7 layers of the OSI model with examples')">OSI Model</button>
+        <button class="topic" onclick="ask('What is normalization? Explain 1NF, 2NF and 3NF')">Normalization</button>
+        <button class="topic" onclick="ask('Explain all phases of the SDLC in detail')">SDLC</button>
+        <button class="topic" onclick="ask('How to convert binary to decimal and hexadecimal step by step')">Number Systems</button>
+        <button class="topic" onclick="ask('Explain HTML and CSS basics for A/L ICT')">Web Tech</button>
+        <button class="topic" onclick="ask('What data structures do I need for A/L ICT?')">Data Structures</button>
+        <button class="topic" onclick="ask('Explain LAN, WAN, MAN and network topologies')">Networks</button>
+        <button class="topic" onclick="ask('What is cybersecurity? Explain threats and protections')">Cybersecurity</button>
+        <button class="topic" onclick="ask('Explain SQL commands for A/L ICT with examples')">SQL</button>
+        <button class="topic" onclick="ask('Explain OOP: encapsulation, inheritance, polymorphism, abstraction')">OOP</button>
+        <button class="topic" onclick="ask('Explain RAM, ROM and cache memory differences')">Memory</button>
+        <button class="topic" onclick="ask('What is the TCP/IP model? Compare with OSI')">TCP/IP</button>
+      </div>
+    </div>
+    <div class="chat" id="chat">
+      <div class="dsep">Today</div>
+      <div class="welcome">
+        <div class="w-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg></div>
+        <h2>Hi, I'm ICT Guru.</h2>
+        <p>Your free A/L ICT study assistant for Sri Lanka. Ask me anything from your syllabus.</p>
+      </div>
+    </div>
+    <div class="inp-wrap">
+      <div class="inp-bar">
+        <textarea id="inp" placeholder="Message ICT Guru…" rows="1" onkeydown="onKey(event)" oninput="grow(this)"></textarea>
+        <button class="send-btn" id="sBtn" onclick="doSend()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+      <div class="inp-hint">Tap a topic above or type your own question</div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile history sheet -->
+<div id="hist-sheet" onclick="closeSheet(event)">
+  <div class="sheet-inner">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Recent Chats</div>
+    <div class="sheet-list" id="sheetList"></div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, query, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+// ── REPLACE WITH YOUR FIREBASE CONFIG ──
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+// ────────────────────────────────────────
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+const provider = new GoogleAuthProvider();
+
+let currentUser = null;
+let currentSessionId = null;
+let hist = [];
+
+const SYSTEM = `You are ICT Guru, a warm, expert AI study assistant exclusively for Sri Lankan A/L (Advanced Level) ICT students.
+
+Sri Lanka A/L ICT syllabus:
+- Introduction to ICT: history, generations, types of computers, societal impact, IT Act Sri Lanka
+- Hardware: CPU (ALU, CU, registers), memory (RAM, ROM, cache, virtual), storage, I/O devices
+- Software: OS types/functions, application/utility, open-source vs proprietary, licensing
+- Data Representation: binary, octal, hexadecimal, BCD, ASCII, Unicode, conversions, 2's complement, floating point
+- Networks: LAN/WAN/MAN/PAN, topologies (star/bus/ring/mesh), OSI 7 layers, TCP/IP, HTTP/FTP/SMTP/DNS/DHCP, IPv4/IPv6
+- Web Tech: HTML5, CSS, JavaScript basics, web servers, hosting
+- DBMS: relational model, ER diagrams, SQL, normalization (1NF/2NF/3NF/BCNF), keys, ACID
+- System Analysis: SDLC phases, DFD, flowcharts, UML, Gantt charts, feasibility study
+- Programming: algorithms, pseudocode, arrays, stacks, queues, linked lists, sorting/searching, OOP
+- Multimedia: raster vs vector, formats, compression, RGB/CMYK
+- Cybersecurity: malware/phishing/DoS, encryption, SSL/TLS, firewalls, VPN, Computer Crimes Act Sri Lanka
+- Emerging Tech: AI/ML, IoT, cloud (SaaS/PaaS/IaaS), big data, blockchain
+
+Rules:
+- ONLY answer A/L ICT syllabus topics. Politely decline unrelated questions.
+- Explain clearly for 17-19 year olds with numbered lists and clear structure.
+- Use Sri Lankan examples (Dialog, SLT) where helpful.
+- Show step-by-step working for numerical problems.
+- Prefix exam tips with "Exam tip:".
+- Be warm, friendly and encouraging.`;
+
+// ── AUTH ──
+window.signInGoogle = async () => {
+  try { await signInWithPopup(auth, provider); }
+  catch(e) { alert('Sign in failed: ' + e.message); }
+};
+
+window.signOut = async () => {
+  if (confirm('Sign out?')) { await fbSignOut(auth); }
+};
+
+onAuthStateChanged(auth, async user => {
+  document.getElementById('pre').style.opacity = '0';
+  setTimeout(() => document.getElementById('pre').style.display = 'none', 400);
+
+  if (user) {
+    currentUser = user;
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+
+    // Set avatar
+    const sbAv = document.getElementById('sbAv');
+    const sbName = document.getElementById('sbName');
+    sbName.textContent = user.displayName?.split(' ')[0] || 'Student';
+    if (user.photoURL) {
+      sbAv.innerHTML = `<img src="${user.photoURL}" alt="avatar"/>`;
+    } else {
+      sbAv.textContent = (user.displayName || 'S')[0].toUpperCase();
+    }
+
+    await loadHistory();
+    newChat(false);
+    document.getElementById('inp').focus();
+  } else {
+    currentUser = null;
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login').style.display = 'flex';
+  }
+});
+
+// ── HISTORY ──
+async function loadHistory() {
+  if (!currentUser) return;
+  const q = query(
+    collection(db, 'users', currentUser.uid, 'sessions'),
+    orderBy('updatedAt', 'desc'),
+    limit(15)
+  );
+  const snap = await getDocs(q);
+  const sessions = [];
+  snap.forEach(d => sessions.push({ id: d.id, ...d.data() }));
+  renderHistList(sessions);
+}
+
+function renderHistList(sessions) {
+  const list = document.getElementById('histList');
+  const sheetList = document.getElementById('sheetList');
+  list.innerHTML = '';
+  sheetList.innerHTML = '';
+
+  if (!sessions.length) {
+    list.innerHTML = '<div class="hist-empty">Your last 15 conversations will appear here.</div>';
+    sheetList.innerHTML = '<div class="hist-empty">No history yet. Start a conversation!</div>';
+    return;
+  }
+
+  sessions.forEach((s, i) => {
+    [list, sheetList].forEach(container => {
+      const item = document.createElement('div');
+      item.className = 'hist-item' + (s.id === currentSessionId ? ' active' : '');
+      item.style.animationDelay = (i * 0.04) + 's';
+      const d = s.updatedAt?.toDate?.() || new Date();
+      const timeStr = d.toLocaleDateString('en-GB', { day:'numeric', month:'short' }) + ', ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+      item.innerHTML = `
+        <div class="hist-item-row">
+          <div class="hist-item-title">${escHtml(s.title || 'Conversation')}</div>
+          <button class="hist-item-del" onclick="event.stopPropagation();delSession('${s.id}')">Delete</button>
+        </div>
+        <div class="hist-item-time">${timeStr}</div>`;
+      item.addEventListener('click', () => loadSession(s));
+      container.appendChild(item);
+    });
+  });
+}
+
+async function saveSession(title, messages) {
+  if (!currentUser || !currentSessionId) return;
+  await setDoc(doc(db, 'users', currentUser.uid, 'sessions', currentSessionId), {
+    title: title.slice(0, 60),
+    messages,
+    updatedAt: serverTimestamp()
+  });
+  // enforce 15 session limit
+  const q = query(collection(db, 'users', currentUser.uid, 'sessions'), orderBy('updatedAt', 'desc'));
+  const snap = await getDocs(q);
+  const all = [];
+  snap.forEach(d => all.push(d.id));
+  if (all.length > 15) {
+    for (const id of all.slice(15)) {
+      await deleteDoc(doc(db, 'users', currentUser.uid, 'sessions', id));
+    }
+  }
+  await loadHistory();
+}
+
+window.delSession = async (id) => {
+  await deleteDoc(doc(db, 'users', currentUser.uid, 'sessions', id));
+  if (id === currentSessionId) newChat(false);
+  await loadHistory();
+};
+
+function loadSession(s) {
+  currentSessionId = s.id;
+  hist = s.messages || [];
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '<div class="dsep">Loaded conversation</div>';
+  hist.forEach(m => {
+    if (m.role === 'user') renderMsg('u', m.parts[0].text);
+    else renderMsg('a', m.parts[0].text);
+  });
+  closeSheet();
+  // update active state
+  document.querySelectorAll('.hist-item').forEach(el => {
+    el.classList.toggle('active', el.querySelector('.hist-item-title')?.textContent === (s.title || 'Conversation'));
+  });
+}
+
+// ── CHAT ──
+window.newChat = function(focus = true) {
+  currentSessionId = Date.now().toString();
+  hist = [];
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '';
+  const sep = document.createElement('div'); sep.className = 'dsep'; sep.textContent = 'Today'; chat.appendChild(sep);
+  const w = document.createElement('div'); w.className = 'welcome';
+  w.innerHTML = `<div class="w-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg></div><h2>Hi, I'm ICT Guru.</h2><p>Your free A/L ICT study assistant for Sri Lanka. Ask me anything from your syllabus.</p>`;
+  chat.appendChild(w);
+  if (focus) document.getElementById('inp').focus();
+  closeSheet();
+};
+
+function renderMsg(role, text) {
+  const chat = document.getElementById('chat');
+  const row = document.createElement('div'); row.className = 'mrow ' + role;
+  if (role === 'a') {
+    const wrap = document.createElement('div'); wrap.className = 'ai-wrap';
+    const av = document.createElement('div'); av.className = 'av'; av.textContent = 'IG';
+    const b = document.createElement('div'); b.className = 'bbl';
+    b.innerHTML = text.replace(/\n/g,'<br>').replace(/`([^`]+)`/g,'<code>$1</code>');
+    wrap.appendChild(av); wrap.appendChild(b); row.appendChild(wrap);
+  } else {
+    const b = document.createElement('div'); b.className = 'bbl'; b.textContent = text; row.appendChild(b);
+  }
+  const t = document.createElement('div'); t.className = 'mtime';
+  t.textContent = role === 'u' ? now() : 'ICT Guru · ' + now();
+  row.appendChild(t); chat.appendChild(row); chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  const chat = document.getElementById('chat');
+  const row = document.createElement('div'); row.className = 'mrow a'; row.id = 'trow';
+  const wrap = document.createElement('div'); wrap.className = 'typing-wrap';
+  const av = document.createElement('div'); av.className = 'av'; av.textContent = 'IG';
+  const b = document.createElement('div'); b.className = 't-bbl';
+  b.innerHTML = '<div class="td"></div><div class="td"></div><div class="td"></div>';
+  wrap.appendChild(av); wrap.appendChild(b); row.appendChild(wrap);
+  chat.appendChild(row); chat.scrollTop = chat.scrollHeight;
+}
+function hideTyping() { const t = document.getElementById('trow'); if(t) t.remove(); }
+
+window.doSend = async function(text) {
+  const inp = document.getElementById('inp');
+  const q = (text || inp.value).trim(); if (!q) return;
+  inp.value = ''; grow(inp);
+  document.getElementById('sBtn').disabled = true;
+  renderMsg('u', q);
+  hist.push({ role: 'user', parts: [{ text: q }] });
+  showTyping();
+  try {
+    const r = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ history: hist, system: SYSTEM }) });
+    const d = await r.json();
+    if (d.error) throw new Error(d.error);
+    hideTyping(); renderMsg('a', d.reply);
+    hist.push({ role: 'model', parts: [{ text: d.reply }] });
+    // save session — title is first user message
+    const title = hist[0]?.parts[0]?.text || 'Conversation';
+    await saveSession(title, hist);
+  } catch(e) {
+    hideTyping(); renderMsg('a', 'Something went wrong. Please try again.'); hist.pop();
+  }
+  document.getElementById('sBtn').disabled = false;
+  document.getElementById('inp').focus();
+};
+
+window.ask = t => window.doSend(t);
+window.onKey = e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();window.doSend();} };
+window.grow = el => { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,96)+'px'; };
+window.openSheet = () => document.getElementById('hist-sheet').classList.add('open');
+window.closeSheet = e => { if(!e||e.target===document.getElementById('hist-sheet')) document.getElementById('hist-sheet').classList.remove('open'); };
+function now() { return new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}); }
+function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// init preloader fade
+setTimeout(() => {
+  const p = document.getElementById('pre');
+  p.style.transition = 'opacity .5s';
+}, 100);
+</script>
+</body>
+</html>
